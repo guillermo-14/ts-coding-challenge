@@ -42,7 +42,7 @@ When(/^A topic is created with the memo "([^"]*)" with the first account as the 
   this.topicId = topicId
 
   // Get the topic info
-  const { topicMemo, submitKey } = await getTopicInfo({ topicId: topicId! })
+  const { topicMemo, submitKey } = await getTopicInfo({ topicId })
 
   // [🧪 Test] Check that the topic memo is the same as the one we created
   assert.equal(topicMemo, memo)
@@ -87,7 +87,7 @@ Given(/^A second account with more than (\d+) hbars$/, async function (expectedB
   this.secondAccountId = accountId
   this.secondAccountPrivateKey = accountPrivateKey
 
-  const hbarBalance = await getHbarBalance(accountId!)
+  const hbarBalance = await getHbarBalance(accountId)
   this.secondAccountBalance = hbarBalance
 
   // [🧪 Test] Check that the second account has more than the expected balance
@@ -113,7 +113,7 @@ When(/^A topic is created with the memo "([^"]*)" with the threshold key as the 
   this.topicId = topicId
 
   // Get the topic info
-  const { topicMemo, submitKey } = await getTopicInfo({ topicId: topicId! })
+  const { topicMemo, submitKey } = await getTopicInfo({ topicId })
 
   // [🧪 Test] Check that the topic memo is the same as the one we created
   assert.equal(topicMemo, memo)

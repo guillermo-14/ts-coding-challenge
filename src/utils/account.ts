@@ -18,14 +18,14 @@ interface CreateAccountParams {
  * @param params.initialBalance - The initial HBAR balance for the account.
  * @returns A promise that resolves to an object containing the new account's AccountId and PrivateKey.
  */
-export async function createAccount ({ initialBalance }: CreateAccountParams = {}) {
+export async function createAccount ({ initialBalance }: CreateAccountParams = {}): Promise<{ accountId: AccountId, accountPrivateKey: PrivateKey }> {
   const accountPrivateKey = await PrivateKey.generateED25519Async()
   const accountPublicKey = accountPrivateKey.publicKey
 
   let tx = new AccountCreateTransaction()
     .setKeyWithoutAlias(accountPublicKey)
 
-  if (initialBalance) {
+  if (initialBalance !== undefined) {
     tx = tx.setInitialBalance(new Hbar(initialBalance))
   }
 
@@ -35,7 +35,9 @@ export async function createAccount ({ initialBalance }: CreateAccountParams = {
   assert.equal(receipt.status.toString(), SDK_RESPONSES.SUCCESS)
 
   const accountId = receipt.accountId
-
+  if (accountId === null) {
+    throw new Error('Failed to create account or retrieve account ID.')
+  }
   return {
     accountId,
     accountPrivateKey

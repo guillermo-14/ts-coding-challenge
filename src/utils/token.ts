@@ -1,4 +1,4 @@
-import { TokenCreateTransaction, TokenId, TokenInfoQuery, TokenMintTransaction, TokenSupplyType } from '@hashgraph/sdk'
+import { TokenCreateTransaction, TokenId, TokenInfo, TokenInfoQuery, TokenMintTransaction } from '@hashgraph/sdk'
 import { client, TREASURY_PRIVATE_KEY } from '@/step_definitions/token-service'
 import { SDK_RESPONSES, TEST_TOKEN_CONFIG } from '@/utils/constants'
 import assert from 'node:assert'
@@ -20,7 +20,7 @@ interface CreateTokenParams {
  * @param params - Optional parameters for token creation, such as fixed supply or initial supply.
  * @returns A promise that resolves with the TokenId of the newly created token.
  */
-export async function createTestToken ({ fixedSupply = false, initialSupply = false }: CreateTokenParams = {}) {
+export async function createTestToken ({ fixedSupply = false, initialSupply = false }: CreateTokenParams = {}): Promise<TokenId> {
   let tx = new TokenCreateTransaction()
     .setTokenType(TEST_TOKEN_CONFIG.TYPE)
     .setTokenName(TEST_TOKEN_CONFIG.NAME)
@@ -45,7 +45,11 @@ export async function createTestToken ({ fixedSupply = false, initialSupply = fa
 
   assert.equal(receipt.status.toString(), SDK_RESPONSES.SUCCESS)
 
-  return receipt.tokenId
+  const tokenId = receipt.tokenId
+  if (tokenId === null) {
+    throw new Error('Failed to create token or retrieve token ID.')
+  }
+  return tokenId
 }
 
 /**
@@ -63,12 +67,14 @@ interface GetTestTokenInfoParams {
  * @param params.tokenId - The TokenId of the token.
  * @returns A promise that resolves with the TokenInfo object.
  */
-export async function getTestTokenInfo ({ tokenId }: GetTestTokenInfoParams) {
+export async function getTestTokenInfo ({ tokenId }: GetTestTokenInfoParams): Promise<TokenInfo> {
   const tx = new TokenInfoQuery()
     .setTokenId(tokenId)
 
   const tokenInfo = await tx.execute(client)
-  // console.log({tokenInfo})
+  if (tokenInfo === null) {
+    throw new Error('Failed to retrieve token info.')
+  }
   return tokenInfo
 }
 
@@ -90,7 +96,7 @@ interface MintTestTokenParams {
  * @param params.amount - The amount of tokens to mint.
  * @returns A promise that resolves to true if the minting transaction is successful.
  */
-export async function mintTestToken ({ tokenId, amount }: MintTestTokenParams) {
+export async function mintTestToken ({ tokenId, amount }: MintTestTokenParams): Promise<void> {
   const tx = new TokenMintTransaction()
     .setTokenId(tokenId)
     .setAmount(amount)
@@ -102,5 +108,5 @@ export async function mintTestToken ({ tokenId, amount }: MintTestTokenParams) {
 
   assert.equal(receipt.status.toString(), SDK_RESPONSES.SUCCESS)
 
-  return true
+  assert.equal(receipt.status.toString(), SDK_RESPONSES.SUCCESS)
 }

@@ -1,4 +1,4 @@
-import { AccountAllowanceApproveTransaction, AccountId, PrivateKey, TokenId, TransactionId, TransferTransaction } from '@hashgraph/sdk'
+import { AccountAllowanceApproveTransaction, AccountId, PrivateKey, TokenId, TransactionId, TransactionReceipt, TransferTransaction } from '@hashgraph/sdk'
 import { client, TREASURY_ACCOUNT_ID, TREASURY_PRIVATE_KEY } from '@/step_definitions/token-service'
 import assert from 'node:assert'
 import { SDK_RESPONSES } from '@/utils/constants'
@@ -11,7 +11,7 @@ import { SDK_RESPONSES } from '@/utils/constants'
  * @param params.tokenId - The TokenId of the token to transfer.
  * @param params.amount - The amount of the token to transfer.
  */
-export async function transferTokensFromTreasury ({ accountId, tokenId, amount }: { accountId: AccountId, tokenId: TokenId, amount: number }) {
+export async function transferTokensFromTreasury ({ accountId, tokenId, amount }: { accountId: AccountId, tokenId: TokenId, amount: number }): Promise<void> {
   const transaction = new TransferTransaction()
     .addTokenTransfer(tokenId, TREASURY_ACCOUNT_ID, -amount)
     .addTokenTransfer(tokenId, accountId, amount)
@@ -31,7 +31,7 @@ export async function transferTokensFromTreasury ({ accountId, tokenId, amount }
  * @param params.privateKey - The PrivateKey to sign the transaction.
  * @returns A promise that resolves with the transaction receipt.
  */
-export async function submitTransferTransaction ({ tx, privateKey }: { tx: TransferTransaction, privateKey: PrivateKey }) {
+export async function submitTransferTransaction ({ tx, privateKey }: { tx: TransferTransaction, privateKey: PrivateKey }): Promise<TransactionReceipt> {
   const signTxTransfer = await tx.sign(privateKey)
   const txTransferResponse = await signTxTransfer.execute(client)
   const receipt = await txTransferResponse.getReceipt(client)
@@ -48,7 +48,7 @@ export async function submitTransferTransaction ({ tx, privateKey }: { tx: Trans
  * @param params.amount - The amount of the token to approve for spending.
  * @param params.privateKey - The PrivateKey of the owner (approver) to sign the transaction.
  */
-export async function approveTransferTransaction ({ tokenId, accountIdA, accountIdB, amount, privateKey }: { tokenId: TokenId, accountIdA: AccountId, accountIdB: AccountId, amount: number, privateKey: PrivateKey }) {
+export async function approveTransferTransaction ({ tokenId, accountIdA, accountIdB, amount, privateKey }: { tokenId: TokenId, accountIdA: AccountId, accountIdB: AccountId, amount: number, privateKey: PrivateKey }): Promise<void> {
   const tx = new AccountAllowanceApproveTransaction()
     .approveTokenAllowance(
       tokenId,
@@ -101,7 +101,7 @@ export async function buildTransferTx ({
   const tx = new TransferTransaction()
 
   for (const { accountId, amount, approved } of moves) {
-    if (approved) {
+    if (approved === true) {
       tx.addApprovedTokenTransfer(tokenId, accountId, amount)
     } else {
       tx.addTokenTransfer(tokenId, accountId, amount)

@@ -119,7 +119,7 @@ Given(/^A first hedera account with more than (\d+) hbar$/, async function (expe
   this.firstAccountId = accountId
   this.firstAccountPrivateKey = accountPrivateKey
 
-  const hbarBalance = await getHbarBalance(accountId!)
+  const hbarBalance = await getHbarBalance(accountId)
   this.firstAccountBalance = hbarBalance
 
   // [🧪 Test] Check that the second account has more than the expected balance
@@ -151,9 +151,9 @@ Given(/^The first account holds (\d+) HTT tokens$/, async function (firstAccount
     accountId: this.firstAccountId,
     tokenId: this.tokenId,
     privateKey: this.firstAccountPrivateKey
-  }) as Long
+  })
 
-  if (firstAccountBalance > 0 && tokenBalance.toNumber() === 0) {
+  if (firstAccountBalance > 0 && tokenBalance === 0) {
     await transferTokensFromTreasury({
       accountId: this.firstAccountId,
       tokenId: this.tokenId,
@@ -165,7 +165,7 @@ Given(/^The first account holds (\d+) HTT tokens$/, async function (firstAccount
     accountId: this.firstAccountId,
     tokenId: this.tokenId,
     privateKey: this.firstAccountPrivateKey
-  }) as Long
+  })
 
   // [🧪 Test] Check that the first account holds the expected number of tokens
   assert.equal(tokenBalance, firstAccountBalance)
@@ -176,9 +176,9 @@ Given(/^The second account holds (\d+) HTT tokens$/, async function (secondAccou
     accountId: this.secondAccountId,
     tokenId: this.tokenId,
     privateKey: this.secondAccountPrivateKey
-  }) as Long
+  })
 
-  if (secondAccountBalance > 0 && tokenBalance.toNumber() === 0) {
+  if (secondAccountBalance > 0 && tokenBalance === 0) {
     await transferTokensFromTreasury({
       accountId: this.secondAccountId,
       tokenId: this.tokenId,
@@ -190,7 +190,7 @@ Given(/^The second account holds (\d+) HTT tokens$/, async function (secondAccou
     accountId: this.secondAccountId,
     tokenId: this.tokenId,
     privateKey: this.secondAccountPrivateKey
-  }) as Long
+  })
 
   // [🧪 Test] Check that the second account holds the expected number of tokens
   assert.equal(tokenBalance, secondAccountBalance)
@@ -236,7 +236,7 @@ When(/^The second account creates a transaction to transfer (\d+) HTT tokens to 
 })
 
 Then(/^The first account has paid for the transaction fee$/, async function () {
-  const hbarBalance = await getHbarBalance(this.firstAccountId!)
+  const hbarBalance = await getHbarBalance(this.firstAccountId)
   // [🧪 Test] Check that the first account has paid for the transaction fee and has less hbar than before
   assert.ok(hbarBalance < this.firstAccountBalance)
 })
@@ -248,19 +248,19 @@ Given(/^A first hedera account with more than (\d+) hbar and (\d+) HTT tokens$/,
   this.firstAccountPrivateKey = accountPrivateKey
 
   await ensureTokenAssociated({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     privateKey: this.firstAccountPrivateKey
   })
 
   await transferTokensFromTreasury({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     amount: expectedTokenBalance
   })
 
-  const hbarBalance = await getHbarBalance(accountId!)
-  const tokenBalance = await getTokenBalance({ accountId: accountId!, tokenId: this.tokenId, privateKey: this.firstAccountPrivateKey }) as Long
+  const hbarBalance = await getHbarBalance(accountId)
+  const tokenBalance = await getTokenBalance({ accountId, tokenId: this.tokenId, privateKey: this.firstAccountPrivateKey })
 
   // [🧪 Test] Check that the second account has more than the expected balance
   assert.ok(hbarBalance > expectedHbarBalance)
@@ -273,19 +273,19 @@ Given(/^A second Hedera account with (\d+) hbar and (\d+) HTT tokens$/, async fu
   this.secondAccountPrivateKey = accountPrivateKey
 
   await ensureTokenAssociated({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     privateKey: this.secondAccountPrivateKey
   })
 
   await transferTokensFromTreasury({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     amount: expectedTokenBalance
   })
 
-  const hbarBalance = await getHbarBalance(accountId!)
-  const tokenBalance = await getTokenBalance({ accountId: accountId!, tokenId: this.tokenId, privateKey: this.secondAccountPrivateKey }) as Long
+  const hbarBalance = await getHbarBalance(accountId)
+  const tokenBalance = await getTokenBalance({ accountId, tokenId: this.tokenId, privateKey: this.secondAccountPrivateKey })
 
   // [🧪 Test] Check that the second account has more than the expected balance
   assert.equal(hbarBalance, expectedHbarBalance)
@@ -298,19 +298,19 @@ Given(/^A third Hedera account with (\d+) hbar and (\d+) HTT tokens$/, async fun
   this.thirdAccountPrivateKey = accountPrivateKey
 
   await ensureTokenAssociated({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     privateKey: this.thirdAccountPrivateKey
   })
 
   await transferTokensFromTreasury({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     amount: expectedTokenBalance
   })
 
-  const hbarBalance = await getHbarBalance(accountId!)
-  const tokenBalance = await getTokenBalance({ accountId: accountId!, tokenId: this.tokenId, privateKey: this.thirdAccountPrivateKey }) as Long
+  const hbarBalance = await getHbarBalance(accountId)
+  const tokenBalance = await getTokenBalance({ accountId, tokenId: this.tokenId, privateKey: this.thirdAccountPrivateKey })
 
   // [🧪 Test] Check that the third account has more than the expected balance
   assert.equal(hbarBalance, expectedHbarBalance)
@@ -323,19 +323,19 @@ Given(/^A fourth Hedera account with (\d+) hbar and (\d+) HTT tokens$/, async fu
   this.fourthAccountPrivateKey = accountPrivateKey
 
   await ensureTokenAssociated({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     privateKey: this.fourthAccountPrivateKey
   })
 
   await transferTokensFromTreasury({
-    accountId: accountId!,
+    accountId,
     tokenId: this.tokenId,
     amount: expectedTokenBalance
   })
 
-  const hbarBalance = await getHbarBalance(accountId!)
-  const tokenBalance = await getTokenBalance({ accountId: accountId!, tokenId: this.tokenId, privateKey: this.fourthAccountPrivateKey }) as Long
+  const hbarBalance = await getHbarBalance(accountId)
+  const tokenBalance = await getTokenBalance({ accountId, tokenId: this.tokenId, privateKey: this.fourthAccountPrivateKey })
 
   // [🧪 Test] Check that the fourth account has more than the expected balance
   assert.equal(hbarBalance, expectedHbarBalance)

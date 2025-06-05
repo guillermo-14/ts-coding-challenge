@@ -9,7 +9,7 @@ import { SDK_RESPONSES } from '@/utils/constants'
  * @param accountId - The AccountId of the account to query.
  * @returns A promise that resolves to the HBAR balance in tinybars, converted to a number.
  */
-export async function getHbarBalance (accountId: AccountId) {
+export async function getHbarBalance (accountId: AccountId): Promise<number> {
   const query = new AccountBalanceQuery()
     .setAccountId(accountId)
   const balance = await query.execute(client)
@@ -25,14 +25,14 @@ export async function getHbarBalance (accountId: AccountId) {
  * @param params.privateKey - The PrivateKey of the account (required for `ensureTokenAssociated`).
  * @returns A promise that resolves to the token balance (number) or 0 if the token is not held.
  */
-export async function getTokenBalance ({ accountId, tokenId, privateKey }: { accountId: AccountId, tokenId: TokenId, privateKey: PrivateKey }) {
+export async function getTokenBalance ({ accountId, tokenId, privateKey }: { accountId: AccountId, tokenId: TokenId, privateKey: PrivateKey }): Promise<number> {
   await ensureTokenAssociated({ accountId, tokenId, privateKey })
 
   const query = new AccountBalanceQuery()
     .setAccountId(accountId)
 
   const balance = await query.execute(client)
-  return balance.tokens?._map.get(tokenId.toString()) ?? 0
+  return balance.tokens?._map.get(tokenId.toString())?.toNumber() ?? 0
 }
 
 /**
@@ -47,7 +47,7 @@ export async function getTokenBalance ({ accountId, tokenId, privateKey }: { acc
  * @param params.privateKey - The PrivateKey of the account to sign the association transaction if needed.
  * @returns A promise that resolves to true if a new association was made, false if already associated.
  */
-export async function ensureTokenAssociated ({ accountId, tokenId, privateKey }: { accountId: AccountId, tokenId: TokenId, privateKey: PrivateKey }) {
+export async function ensureTokenAssociated ({ accountId, tokenId, privateKey }: { accountId: AccountId, tokenId: TokenId, privateKey: PrivateKey }): Promise<boolean> {
   const tx = new TokenAssociateTransaction()
     .setAccountId(accountId)
     .setTokenIds([tokenId])
