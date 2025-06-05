@@ -1,5 +1,14 @@
 # tha-coding-challenge
+> [!NOTE]  
+> To successfully complete the project, several enhancements and considerations were addressed:
+- **Linter Integration**: A linter has been integrated to enforce code quality and maintain consistency across the codebase.
+- **Common Functions Refactoring**: Shared functionalities were refactored into common utility functions to promote modularity and reusability.
+- **Default Timeout Update**: The default timeout for operations has been adjusted to enhance test reliability and prevent premature failures.
+- **Relative Path Updates**: All relative paths within the project have been standardized and updated for consistency and to prevent build issues.
+- **JSDoc Documentation**: Code components have been thoroughly documented using JSDoc comments, improving clarity and maintainability.
+- **GitHub Actions for CI**: Continuous integration workflows have been set up using GitHub Actions to automatically run tests on each push and pull request, ensuring code validity. You need to set the 2 secrets referenced on the `.env.example` file like a github repository secret
 
+------------------
 This coding challenge uses [Cucumber](https://cucumber.io/) to run tests which implement a hypothetical use-case for Hedera SDK.
 
 ## How to Solve It
